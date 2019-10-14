@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-import imageio
+from PIL import Image
 from helper_methods import *
 
 
@@ -20,7 +20,23 @@ def help_prompt():
 
 
 def convert():
-    print(sys.argv[2], sys.argv[3])
+    img = Image.open(sys.argv[2])
+    print(img.size, img.format)
+    pixels = []
+    # read pixel data and add it to 2d array
+    for x in range(img.size[0]):
+        row = []
+        for y in range(img.size[1]):
+            coordinate = (x, y)
+            row.append(img.getpixel(coordinate))
+        pixels.append(row)
+    # save as custom file format
+        with open(sys.argv[3], 'wb') as output:
+            output.write(int_to_byte(img.size[0]))
+            for row in pixels:
+                for pixel in row:
+                    for channel in pixel:
+                        output.write(int_to_byte(channel))
 
 
 def view():
@@ -46,10 +62,16 @@ def view():
 
 
 if __name__ == "__main__":
-    if (sys.argv[1] in ('-h', '--help')):
+    if (len(sys.argv) == 1):
+        pass
+    elif (sys.argv[1] in ('-h', '--help')):
         help_prompt()
     elif (sys.argv[1] == '-c'):
-        convert()
+        if len(sys.argv) == 4:
+            convert()
+        else:
+            help_prompt()
+            sys.exit(1)
     #elif (sys.argv[1][-4:] == '.bpi'):
     else:
         view()
