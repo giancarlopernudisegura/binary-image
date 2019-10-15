@@ -20,6 +20,7 @@ def help_prompt():
 
 
 def convert():
+    lambda split_int: (a // (2**8), a % (2**8))
     img = Image.open(sys.argv[2])
     print(img.size, img.format)
     pixels = []
@@ -32,7 +33,10 @@ def convert():
         pixels.append(row)
     # save as custom file format
         with open(sys.argv[3], 'wb') as output:
-            output.write(int_to_byte(img.size[0]))
+            for w in split_int(img.size[0]):
+                output.write(int_to_byte(w))
+            for w in split_int(img.size[1]):
+                output.write(int_to_byte(w))
             for row in pixels:
                 for pixel in row:
                     for channel in pixel:
@@ -41,24 +45,22 @@ def convert():
 
 def view():
     with open(sys.argv[1], 'rb') as f:
-        w = byte_to_int(f.read(1))
+        w = byte_to_int(f.read(1)) * (2**8)
+        w += byte_to_int(f.read(1))
+        h = byte_to_int(f.read(1)) * (2**8)
+        h += byte_to_int(f.read(1))
         pixels = []
         print("width:", w)
-        pixel_count = 1
-        end_of_file = True
-        while end_of_file:
-            # saves the next three bytes as integers in a rgb pixel
-            r = f.read(1)
-            g = f.read(1)
-            b = f.read(1)
-            rgb = pixel(r, g, b)
-            if (r == b''):
-                end_of_file = False
-            else:
+        print("height:", h)
+        for row in w:
+            for col in h:
+                # saves the next three bytes as integers in a rgb pixel
+                r = f.read(1)
+                g = f.read(1)
+                b = f.read(1)
+                rgb = pixel(r, g, b)
                 printf(f'rgb{rgb}, ')
-                if (pixel_count % w == 0):
-                    printf('\b\b \n')
-            pixel_count += 1
+            printf('\b\b \n')
 
 
 if __name__ == "__main__":
