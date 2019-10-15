@@ -20,7 +20,7 @@ def help_prompt():
 
 
 def convert():
-    lambda split_int: (a // (2**8), a % (2**8))
+    split_int = lambda a: (a // (2**8), a % (2**8))
     img = Image.open(sys.argv[2])
     print(img.size, img.format)
     pixels = []
