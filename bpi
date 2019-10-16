@@ -31,16 +31,18 @@ def convert():
             coordinate = (x, y)
             row.append(img.getpixel(coordinate))
         pixels.append(row)
+    print('> done reading input file')
     # save as custom file format
-        with open(sys.argv[3], 'wb') as output:
-            for w in split_int(img.size[0]):
-                output.write(int_to_byte(w))
-            for w in split_int(img.size[1]):
-                output.write(int_to_byte(w))
-            for row in pixels:
-                for pixel in row:
-                    for channel in pixel:
-                        output.write(int_to_byte(channel))
+    with open(sys.argv[3], 'wb') as output:
+        for w in split_int(img.size[0]):
+            output.write(int_to_byte(w))
+        for w in split_int(img.size[1]):
+            output.write(int_to_byte(w))
+        for row in pixels:
+            for pixel in row:
+                for channel in pixel:
+                    output.write(int_to_byte(channel))
+    print('> done writing new file')
 
 
 def view():
@@ -49,18 +51,21 @@ def view():
         w += byte_to_int(f.read(1))
         h = byte_to_int(f.read(1)) * (2**8)
         h += byte_to_int(f.read(1))
-        pixels = []
         print("width:", w)
         print("height:", h)
-        for row in w:
-            for col in h:
+        img = Image.new('RGB', (w, h))
+        for x in range(w):
+            for y in range(h):
                 # saves the next three bytes as integers in a rgb pixel
                 r = f.read(1)
                 g = f.read(1)
                 b = f.read(1)
                 rgb = pixel(r, g, b)
-                printf(f'rgb{rgb}, ')
-            printf('\b\b \n')
+                #printf(f'rgb{rgb}, ')
+                # change pixel here
+                img.putpixel((x, y), rgb)
+            #printf('\b\b \n')
+        img.show()
 
 
 if __name__ == "__main__":
