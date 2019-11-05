@@ -36,8 +36,8 @@ def convert():
     with open(sys.argv[3], 'wb') as output:
         for w in split_int(img.size[0]):
             output.write(int_to_byte(w))
-        for w in split_int(img.size[1]):
-            output.write(int_to_byte(w))
+        for h in split_int(img.size[1]):
+            output.write(int_to_byte(h))
         for row in pixels:
             for pixel in row:
                 for channel in pixel:
