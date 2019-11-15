@@ -38,11 +38,24 @@ def convert():
             output.write(int_to_byte(w))
         for h in split_int(img.size[1]):
             output.write(int_to_byte(h))
-        for row in pixels:
-            for pixel in row:
-                for channel in pixel:
-                    output.write(int_to_byte(channel))
+        for channel in range(3):
+            for row in pixels:
+                for pixel in row:
+                    output.write(int_to_byte(pixel[channel]))
     print('> done writing new file')
+
+
+def read(image_file, width, height):
+    pixels = []
+    for c in range(3):
+        channel = []
+        for x in range(width):
+            row = []
+            for y in range(height):
+                row.append(byte_to_int(image_file.read(1)))
+            channel.append(row)
+        pixels.append(channel)
+    return pixels
 
 
 def view():
@@ -54,17 +67,14 @@ def view():
         print("width:", w)
         print("height:", h)
         img = Image.new('YCbCr', (w, h))
+        raw_image = read(f, w, h)
+        print(raw_image)
         for x in range(w):
             for y in range(h):
-                # saves the next three bytes as integers in a rgb pixel
-                r = f.read(1)
-                g = f.read(1)
-                b = f.read(1)
-                rgb = pixel(r, g, b)
-                #printf(f'rgb{rgb}, ')
+                pixel = (raw_image[0][x][y], raw_image[1][x][y], raw_image[2][x][y])
+                print(pixel)
                 # change pixel here
-                img.putpixel((x, y), rgb)
-            #printf('\b\b \n')
+                img.putpixel((x, y), pixel)
         img.convert('RGB')
         img.show()
 
