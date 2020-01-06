@@ -1,6 +1,9 @@
 # binary-image
 img.🖼
 
+## Presentation
+[Google Slides](https://docs.google.com/presentation/d/1FvD-HUjSb7XyvyUZqgzm-19n-88lS7RXcrUrqMsy2mI/edit?usp=sharing)
+
 ## Compressions steps:
 - [x] Save channels as YCbCr as opposed to RGB
 - [x] Save a whole channel at a time instead of per pixel
